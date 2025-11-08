@@ -1,0 +1,30 @@
+@import "tailwindcss";
+
+/* Estilo base para todos los scrollbars */
+* {
+  scrollbar-color: #2b7fff transparent;
+}
+
+/* Hide scrollbar for mobile navigation */
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, and Opera */
+}
+
+/* Smooth scrolling for mobile navigation */
+.mobile-nav-scroll {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Better touch targets for mobile */
+@media (max-width: 640px) {
+  .mobile-nav-button {
+    min-height: 44px; /* Apple's recommended touch target size */
+    min-width: 44px;
+  }
+}
