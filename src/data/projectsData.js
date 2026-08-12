@@ -44,6 +44,58 @@ export const projects = [
     status: "Completado",
   },
   {
+    id: 5,
+    title: "Cine Aurora",
+    brief:
+      "App para la reserva de boletos de cine con arquitectura de microservicios.",
+    description:
+      "Plataforma para explorar funciones, seleccionar asientos y reservar boletos de cine con autenticación moderna y notificaciones por correo.",
+    fullDescription:
+      "Desarrollo de una aplicación de reserva de boletos de cine construida sobre una arquitectura de microservicios. El frontend está hecho con React y se comunica con servicios backend desarrollados con NestJS y Spring Boot, apoyados por MySQL y PostgreSQL para la persistencia de datos. La solución integra autenticación con Google OAuth 2.0, envío de correos con Gmail y un flujo de reserva pensado para ofrecer una experiencia rápida, segura y escalable.",
+    technologies: [
+      "React",
+      "NestJS",
+      "Spring Boot",
+      "MySQL",
+      "PostgreSQL",
+      "Gmail",
+      "Google OAuth 2.0",
+      "Docker",
+    ],
+    image: "projects/cineAurora/logo.png",
+    images: [
+      "projects/cineAurora/img1.png",
+      "projects/cineAurora/img2.png",
+      "projects/cineAurora/img3.png",
+      "projects/cineAurora/img4.png",
+      "projects/cineAurora/img5.png",
+    ],
+    features: [
+      "Reserva de boletos de cine",
+      "Selección de asientos en sala",
+      "Autenticación con Google OAuth 2.0",
+      "Gestión de funciones y reservas",
+      "Envío de confirmaciones por Gmail",
+      "Arquitectura distribuida basada en microservicios",
+    ],
+    challenges: [
+      "Separación de responsabilidades entre frontend y microservicios",
+      "Integración de autenticación con Google OAuth 2.0 y sesiones seguras",
+      "Coordinación de datos entre servicios con MySQL y PostgreSQL",
+      "Implementación de un flujo de reserva fluido y escalable",
+    ],
+    results: [
+      "Proceso de compra de boletos más claro y ágil",
+      "Arquitectura preparada para escalar por módulos independientes",
+      "Autenticación y confirmación de reservas centralizadas",
+      "Mejor experiencia de usuario en la gestión de funciones y asientos",
+    ],
+    githubUrl: "https://github.com/SDDrouet/CineAurora_Complexivo",
+    duration: "2 meses",
+    category: "Aplicación Web - Microservicios",
+    status: "Completado",
+  },
+  {
     id: 2,
     title: "Start Blog",
     brief: "Blog para compartir conocimientos y experiencias.",
@@ -167,7 +219,7 @@ export const skills = [
   {
     category: "Frontend",
     items: [
-      "React",      
+      "React",
       "Angular",
       "JavaScript",
       "TypeScript",
