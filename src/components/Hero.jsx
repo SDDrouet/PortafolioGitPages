@@ -12,7 +12,7 @@ export const Hero = () => {
                     </h2>
                     <h3 className='text-2xl sm:text-3xl md:text-4xl font-semibold text-gray-300 min-h-[3rem]'>                        
                         <TextType
-                            text={["🙌 ¡Bienvenido!", "👀 Descubre mi trabajo", "⏱️ Tómate tu tiempo"]}
+                            text={["¡Bienvenido!", "Descubre mi trabajo", "Hello World!"]}
                             typingSpeed={50}
                             pauseDuration={1500}
                             showCursor={true}

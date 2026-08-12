@@ -1,125 +1,96 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { IconHome, IconFolders, IconCertificate, IconCode, IconMail } from '@tabler/icons-react';
+
+const navItems = [
+    { id: 'sobre-mi', label: 'Sobre mí', icon: IconHome },
+    { id: 'proyectos', label: 'Proyectos', icon: IconFolders },
+    { id: 'certificados', label: 'Certificados', icon: IconCertificate },
+    { id: 'habilidades', label: 'Habilidades', icon: IconCode },
+    { id: 'contacto', label: 'Contacto', icon: IconMail },
+];
 
 export const Navigation = ({ activeSection, scrollToSection }) => {
-    const navItems = [
-        { id: 'sobre-mi', label: 'Sobre mí', shortLabel: 'Inicio' },
-        { id: 'proyectos', label: 'Proyectos', shortLabel: 'Proyectos' },
-        { id: 'certificados', label: 'Certificados', shortLabel: 'Certificados' },
-        { id: 'habilidades', label: 'Habilidades', shortLabel: 'Habilidades' },
-        { id: 'contacto', label: 'Contacto', shortLabel: 'Contacto' }
-    ];
+    const [hoveredId, setHoveredId] = useState(null);
 
     return (
-        <nav className="fixed top-0 w-full bg-gray-900/90 backdrop-blur-md border-b border-gray-800 z-30">
-            {/* Desktop and Large Mobile Layout */}
-            <div className="hidden md:block">
-                <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4">
-                    <div className="flex justify-between items-center">
-                        <h1 className="text-lg sm:text-xl font-bold text-white hover:text-blue-400 transition-colors duration-300">
-                            Stephen Drouet
-                        </h1>
-                        <div className="flex gap-1 sm:gap-2">
-                            {navItems.map((item) => (
-                                <button
-                                    key={item.id}
-                                    onClick={() => scrollToSection(item.id)}
-                                    className={`relative cursor-pointer px-3 py-2 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium rounded-lg transition-all duration-300 ease-out group overflow-hidden ${
-                                        activeSection === item.id 
-                                            ? 'text-blue-400 bg-blue-500/10 shadow-lg shadow-blue-500/20' 
-                                            : 'text-gray-400 hover:text-white hover:bg-gray-800/50'
-                                    }`}
-                                >
-                                    {/* Background hover effect */}
-                                    <div className={`absolute inset-0 transition-all duration-300 ease-out ${
-                                        activeSection === item.id
-                                            ? 'bg-gradient-to-r from-blue-500/20 to-blue-600/20 scale-100'
-                                            : 'bg-gradient-to-r from-gray-700/0 to-gray-600/0 scale-0 group-hover:scale-100 group-hover:from-gray-700/30 group-hover:to-gray-600/30'
-                                    }`}></div>
-                                    
-                                    {/* Animated underline */}
-                                    <div className={`absolute bottom-0 left-1/2 h-0.5 transition-all duration-300 ease-out ${
-                                        activeSection === item.id
-                                            ? 'w-3/4 bg-blue-400 -translate-x-1/2'
-                                            : 'w-0 bg-gray-300 -translate-x-1/2 group-hover:w-1/2'
-                                    }`}></div>
-                                    
-                                    {/* Text with subtle scale animation */}
-                                    <span className="relative z-10 transition-transform duration-200 ease-out group-hover:scale-105">
-                                        {item.label}
-                                    </span>
-                                    
-                                    {/* Subtle glow effect for active state */}
-                                    {activeSection === item.id && (
-                                        <div className="absolute inset-0 rounded-lg bg-blue-400/5 animate-pulse"></div>
-                                    )}
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <>
+            {/* Sidebar Desktop */}
+            <nav className="hidden md:flex fixed left-0 top-1/2 -translate-y-1/2 z-40 flex-col items-center gap-1 py-4 px-3">
+                <div className="absolute left-1/2 -translate-x-1/2 top-2 bottom-2 w-px bg-gradient-to-b from-transparent via-gray-700/50 to-transparent -z-10" />
 
-            {/* Mobile Layout */}
-            <div className="block md:hidden">
-                
-                
-                {/* Mobile Navigation - Horizontal Scroll */}
-                <div className="px-2 py-2">
-                    <div className="flex gap-1 overflow-x-auto scrollbar-hide mobile-nav-scroll pb-1 snap-x snap-mandatory">
-                        {navItems.map((item) => (
+                {navItems.map((item) => {
+                    const Icon = item.icon;
+                    const isActive = activeSection === item.id;
+                    const isHovered = hoveredId === item.id;
+
+                    return (
+                        <div key={item.id} className="relative flex items-center">
                             <button
-                                key={item.id}
                                 onClick={() => scrollToSection(item.id)}
-                                className={`relative cursor-pointer flex-shrink-0 mobile-nav-button px-4 py-2.5 text-xs font-medium rounded-lg transition-all duration-300 ease-out group overflow-hidden min-w-fit snap-center active:scale-95 ${
-                                    activeSection === item.id 
-                                        ? 'text-blue-400 bg-blue-500/15 shadow-md shadow-blue-500/25 border border-blue-500/30' 
-                                        : 'text-gray-400 active:text-white active:bg-gray-800/60 border border-transparent'
-                                }`}
-                            >
-                                {/* Background active effect for mobile */}
-                                <div className={`absolute inset-0 transition-all duration-300 ease-out ${
-                                    activeSection === item.id
-                                        ? 'bg-gradient-to-r from-blue-500/15 to-blue-600/15 scale-100'
-                                        : 'bg-gradient-to-r from-gray-700/0 to-gray-600/0 scale-0 group-active:scale-100 group-active:from-gray-700/40 group-active:to-gray-600/40'
-                                }`}></div>
-                                
-                                {/* Active indicator dot */}
-                                {activeSection === item.id && (
-                                    <div className="absolute top-1 right-1 w-1.5 h-1.5 bg-blue-400 rounded-full animate-pulse"></div>
-                                )}
-                                
-                                {/* Bottom indicator line for active state */}
-                                <div className={`absolute bottom-0 left-1/2 h-0.5 transition-all duration-300 ease-out ${
-                                    activeSection === item.id
-                                        ? 'w-3/4 bg-blue-400 -translate-x-1/2'
-                                        : 'w-0 bg-blue-400 -translate-x-1/2'
-                                }`}></div>
-                                
-                                {/* Text */}
-                                <span className="relative z-10 transition-transform duration-200 ease-out">
-                                    {item.shortLabel}
-                                </span>
-                            </button>
-                        ))}
-                    </div>
-                    
-                    {/* Scroll hint for mobile */}
-                    <div className="flex justify-center mt-1">
-                        <div className="flex gap-1">
-                            {navItems.map((_, index) => (
-                                <div
-                                    key={index}
-                                    className={`w-1 h-1 rounded-full transition-all duration-300 ${
-                                        navItems.findIndex(item => item.id === activeSection) === index
-                                            ? 'bg-blue-400 w-3'
-                                            : 'bg-gray-600'
+                                onMouseEnter={() => setHoveredId(item.id)}
+                                onMouseLeave={() => setHoveredId(null)}
+                                aria-label={item.label}
+                                className={`group relative flex items-center justify-center w-11 h-11 rounded-full cursor-pointer
+                                    transition-all duration-300 ease-out
+                                    ${isActive
+                                        ? 'text-blue-400 bg-blue-500/10 backdrop-blur-sm ring-1 ring-blue-400/30 shadow-lg shadow-blue-500/10'
+                                        : 'text-gray-500 hover:text-gray-200 hover:bg-gray-800/40'
                                     }`}
+                            >
+                                <Icon
+                                    className={`transition-transform duration-300 ease-out ${
+                                        isActive ? 'scale-110' : 'group-hover:scale-110'
+                                    }`}
+                                    size={19}
+                                    stroke={1.75}
                                 />
-                            ))}
+
+                                {isActive && (
+                                    <span className="absolute -right-1 top-1/2 -translate-y-1/2 w-1 h-1 rounded-full bg-blue-400 animate-pulse" />
+                                )}
+                            </button>
+
+                            {/* Tooltip */}
+                            <div
+                                className={`absolute left-full ml-3 whitespace-nowrap px-3 py-1.5 rounded-md text-xs font-medium
+                                    bg-gray-900/90 backdrop-blur-sm border border-gray-800/80 text-gray-200 shadow-xl
+                                    transition-all duration-200 ease-out pointer-events-none
+                                    ${isHovered ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-2'}`}
+                            >
+                                {item.label}
+                            </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </nav>
+                    );
+                })}
+            </nav>
+
+            {/* Sidebar Mobile */}
+            <nav className="flex md:hidden fixed left-1.5 top-1/2 -translate-y-1/2 z-40 flex-col items-center gap-1.5 py-2">
+                <div className="absolute left-1/2 -translate-x-1/2 top-1 bottom-1 w-px bg-gradient-to-b from-transparent via-gray-700/40 to-transparent -z-10" />
+
+                {navItems.map((item) => {
+                    const Icon = item.icon;
+                    const isActive = activeSection === item.id;
+
+                    return (
+                        <button
+                            key={item.id}
+                            onClick={() => scrollToSection(item.id)}
+                            aria-label={item.label}
+                            className={`relative flex items-center justify-center w-9 h-9 rounded-full transition-all duration-300 active:scale-90
+                                ${isActive
+                                    ? 'text-blue-400 bg-blue-500/15 ring-1 ring-blue-400/30'
+                                    : 'text-gray-500 active:text-gray-200 active:bg-gray-800/50'
+                                }`}
+                        >
+                            <Icon size={16} stroke={1.75} />
+                            {isActive && (
+                                <span className="absolute -right-0.5 top-1/2 -translate-y-1/2 w-1 h-1 rounded-full bg-blue-400" />
+                            )}
+                        </button>
+                    );
+                })}
+            </nav>
+        </>
     );
 };

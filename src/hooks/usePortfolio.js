@@ -1,33 +1,42 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback  } from 'react';
+
+const SECTION_IDS = ['sobre-mi', 'proyectos', 'certificados', 'habilidades', 'contacto'];
 
 export const useActiveSection = () => {
     const [activeSection, setActiveSection] = useState('sobre-mi');
 
     useEffect(() => {
-        const handleScroll = () => {
-            const sections = ['sobre-mi', 'proyectos', 'certificados', 'habilidades', 'contacto'];
-            const currentSection = sections.find(section => {
-                const element = document.getElementById(section);
-                if (element) {
-                    const rect = element.getBoundingClientRect();
-                    return rect.top <= 100 && rect.bottom >= 100;
-                }
-                return false;
-            });
-            
-            if (currentSection) {
-                setActiveSection(currentSection);
-            }
-        };
+        const scrollContainer = document.querySelector('[data-scroll-container]');
 
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
+        const observer = new IntersectionObserver(
+            (entries) => {
+                const visible = entries
+                    .filter((entry) => entry.isIntersecting)
+                    .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+
+                if (visible.length > 0) {
+                    setActiveSection(visible[0].target.id);
+                }
+            },
+            {
+                root: scrollContainer || null,
+                rootMargin: '-20% 0px -60% 0px',
+                threshold: [0, 0.25, 0.5, 0.75, 1],
+            }
+        );
+
+        SECTION_IDS.forEach((id) => {
+            const el = document.getElementById(id);
+            if (el) observer.observe(el);
+        });
+
+        return () => observer.disconnect();
     }, []);
 
-    const scrollToSection = (sectionId) => {
+    const scrollToSection = useCallback((sectionId) => {
         setActiveSection(sectionId);
         document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth' });
-    };
+    }, []);
 
     return { activeSection, scrollToSection };
 };
