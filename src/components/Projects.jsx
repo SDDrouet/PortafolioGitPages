@@ -4,6 +4,46 @@ import {
     IconChevronRight
 } from '@tabler/icons-react';
 
+// Mosaic gallery for a single project card: always 4 cells in a 2x2 grid.
+// The first cell is always the project logo (project.image), shown with
+// object-contain on its own tile since logos usually aren't meant to be
+// cropped or stretched like a screenshot. The remaining up-to-3 cells are
+// screenshots from project.images, shown with object-cover.
+const ProjectGallery = ({ logo, images, title }) => {
+    const shots = (images ?? []).filter(Boolean).slice(0, 3);
+    const cells = [
+        { src: logo, isLogo: true },
+        ...shots.map((src) => ({ src, isLogo: false })),
+    ];
+    while (cells.length < 4) cells.push(null);
+
+    return (
+        <div className="aspect-video bg-gray-950 overflow-hidden grid grid-cols-2 grid-rows-2 gap-px">
+            {cells.map((cell, i) => (
+                <div
+                    key={i}
+                    className="relative overflow-hidden bg-gray-900/60 flex items-center justify-center"
+                >
+                    {cell?.isLogo && cell.src && (
+                        <img
+                            src={cell.src}
+                            alt={`${title} logo`}
+                            className="w-full h-full object-contain group-hover:scale-[1.04] transition-transform duration-500 ease-out"
+                        />
+                    )}
+                    {cell && !cell.isLogo && (
+                        <img
+                            src={cell.src}
+                            alt={`${title} ${i}`}
+                            className="w-full h-full object-contain group-hover:scale-[1.05] transition-transform duration-500 ease-out"
+                        />
+                    )}
+                </div>
+            ))}
+        </div>
+    );
+};
+
 export const Projects = ({
     projects,
     currentSlide,
@@ -26,55 +66,52 @@ export const Projects = ({
                                 className="flex transition-transform duration-500 ease-in-out"
                                 style={{ transform: `translateX(-${currentSlide * 100}%)` }}
                             >
-                                {projects.map((project) => (
-                                    <div
-                                        key={project.id}
-                                        className="w-full flex-shrink-0 px-2"
-                                    >
+                                {projects.map((project) => {
+                                    return (
                                         <div
-                                            onClick={() => onProjectSelect(project)}
-                                            className="group cursor-pointer bg-gray-900/85 rounded-xl overflow-hidden border border-gray-800 hover:border-blue-500 transition-all"
+                                            key={project.id}
+                                            className="w-full flex-shrink-0 px-2"
                                         >
-                                            <div className="bg-gray-800 overflow-hidden select-none">
-                                                <img
-                                                    src={project.image}
-                                                    alt={project.title}
-                                                    className="w-full aspect-video object-contain group-hover:scale-105 transition-transform duration-300"
-                                                />
-                                            </div>
-                                            <div className="p-4 sm:p-6">
-                                                <div className="flex justify-between items-start mb-2">
-                                                    <h4 className="text-xl sm:text-2xl font-semibold text-white group-hover:text-blue-400 transition-colors">
-                                                        {project.title}
-                                                    </h4>
-                                                    <span className="px-2 py-1 bg-blue-500/20 text-blue-400 text-xs rounded-full border border-blue-500/30">
-                                                        {project.category}
-                                                    </span>
-                                                </div>
-                                                <p className="text-gray-400 text-sm sm:text-base mb-4">{project.brief}</p>
-                                                <div className="flex flex-wrap gap-2 mb-4">
-                                                    {project.technologies.slice(0, 3).map((tech) => (
-                                                        <span
-                                                            key={tech}
-                                                            className="px-2 sm:px-3 py-1 bg-gray-800 text-gray-300 rounded-full text-xs sm:text-sm border border-gray-700"
-                                                        >
-                                                            {tech}
+                                            <div
+                                                onClick={() => onProjectSelect(project)}
+                                                className="group cursor-pointer bg-gray-900/85 rounded-xl overflow-hidden border border-gray-800 hover:border-gray-700 transition-colors duration-300"
+                                            >
+                                                <ProjectGallery logo={project.image} images={project.images} title={project.title} />
+
+                                                <div className="p-4 sm:p-6">
+                                                    <div className="flex justify-between items-start gap-3 mb-2">
+                                                        <h4 className="text-xl sm:text-2xl font-semibold text-white group-hover:text-blue-400 transition-colors">
+                                                            {project.title}
+                                                        </h4>
+                                                        <span className="shrink-0 px-2 py-1 bg-white/[0.04] text-gray-400 text-xs rounded-full border border-white/10">
+                                                            {project.category}
                                                         </span>
-                                                    ))}
-                                                    {project.technologies.length > 3 && (
-                                                        <span className="px-2 sm:px-3 py-1 bg-gray-800 text-gray-300 rounded-full text-xs sm:text-sm border border-gray-700">
-                                                            +{project.technologies.length - 3}
-                                                        </span>
-                                                    )}
-                                                </div>
-                                                <div className="flex items-center justify-between text-sm text-gray-500">
-                                                    <span>{project.duration}</span>
-                                                    <span className="text-blue-400 hover:text-blue-300">Ver detalles →</span>
+                                                    </div>
+                                                    <p className="text-gray-400 text-sm sm:text-base mb-4">{project.brief}</p>
+                                                    <div className="flex flex-wrap gap-2 mb-4">
+                                                        {project.technologies.slice(0, 3).map((tech) => (
+                                                            <span
+                                                                key={tech}
+                                                                className="px-2 sm:px-3 py-1 bg-gray-800/60 text-gray-300 rounded-full text-xs sm:text-sm border border-gray-700/60"
+                                                            >
+                                                                {tech}
+                                                            </span>
+                                                        ))}
+                                                        {project.technologies.length > 3 && (
+                                                            <span className="px-2 sm:px-3 py-1 bg-gray-800/60 text-gray-300 rounded-full text-xs sm:text-sm border border-gray-700/60">
+                                                                +{project.technologies.length - 3}
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                    <div className="flex items-center justify-between text-sm text-gray-500">
+                                                        <span>{project.duration}</span>
+                                                        <span className="text-blue-400/90 group-hover:text-blue-300 transition-colors">Ver detalles →</span>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                ))}
+                                    );
+                                })}
                             </div>
                         </div>
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { 
     IconX, 
     IconChevronLeft, 
@@ -8,7 +8,8 @@ import {
     IconCheck,
     IconStar,
     IconTarget,
-    IconTrendingUp
+    IconTrendingUp,
+    IconZoomIn
 } from '@tabler/icons-react';
 
 export const ProjectModal = ({ 
@@ -23,6 +24,27 @@ export const ProjectModal = ({
     prevImage,
     goToImage
 }) => {
+    const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+
+    // Cierra el lightbox con Escape, y si sigue abierto, cierra el modal completo
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if (e.key !== 'Escape') return;
+            if (isLightboxOpen) {
+                setIsLightboxOpen(false);
+            } else {
+                onClose();
+            }
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [isLightboxOpen, onClose]);
+
+    // Si cambia de proyecto, aseguramos que el lightbox no quede abierto
+    useEffect(() => {
+        setIsLightboxOpen(false);
+    }, [project]);
+
     if (!project) return null;
 
     const tabs = [
@@ -38,14 +60,23 @@ export const ProjectModal = ({
         }
     };
 
+    const handleLightboxBackdropClick = (e) => {
+        if (e.target === e.currentTarget) {
+            setIsLightboxOpen(false);
+        }
+    };
+
     const renderTabContent = () => {
         switch (activeTab) {
             case 'overview':
                 return (
-                    <div className="space-y-4">
+                    <div className="space-y-6">
                         {/* Image Gallery */}
-                        <div className="relative mx-auto max-w-[600px]">
-                            <div className="overflow-hidden rounded-lg shadow-lg">
+                        <div className="relative mx-auto max-w-[820px]">
+                            <div 
+                                className="overflow-hidden rounded-lg shadow-lg cursor-zoom-in group relative"
+                                onClick={() => setIsLightboxOpen(true)}
+                            >
                                 <div
                                     className="flex transition-transform duration-300 ease-in-out"
                                     style={{ transform: `translateX(-${currentImageIndex * 100}%)` }}
@@ -59,20 +90,32 @@ export const ProjectModal = ({
                                         />
                                     ))}
                                 </div>
+                                {/* Zoom hint overlay */}
+                                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center pointer-events-none">
+                                    <div className="opacity-0 group-hover:opacity-100 transition-opacity bg-black/60 rounded-full p-3">
+                                        <IconZoomIn className="w-5 h-5 text-white" />
+                                    </div>
+                                </div>
                             </div>
                             
                             {/* Navigation Arrows */}
                             {project.images && project.images.length > 1 && (
                                 <>
                                     <button
-                                        onClick={() => prevImage(project.images.length)}
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            prevImage(project.images.length);
+                                        }}
                                         className="absolute left-2 top-1/2 cursor-pointer -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 transition-colors"
                                         title="Imagen anterior"
                                     >
                                         <IconChevronLeft className="w-4 h-4" />
                                     </button>
                                     <button
-                                        onClick={() => nextImage(project.images.length)}
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            nextImage(project.images.length);
+                                        }}
                                         className="absolute right-2 top-1/2 cursor-pointer -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 transition-colors"
                                         title="Siguiente imagen"
                                     >
@@ -87,7 +130,10 @@ export const ProjectModal = ({
                                     {project.images.map((_, index) => (
                                         <button
                                             key={index}
-                                            onClick={() => goToImage(index)}
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                goToImage(index);
+                                            }}
                                             className={`transition-all ${
                                                 index === currentImageIndex
                                                     ? 'w-6 bg-blue-500'
@@ -138,7 +184,7 @@ export const ProjectModal = ({
                 return (
                     <div className="space-y-3">
                         <h5 className="text-base font-semibold text-white mb-3">Características Principales</h5>
-                        <div className="grid gap-2">
+                        <div className="grid sm:grid-cols-2 gap-2">
                             {project.features?.map((feature, index) => (
                                 <div key={index} className="flex items-start gap-2 p-2.5 bg-gray-800/50 rounded-md border border-gray-700/50 hover:border-gray-600/50 transition-colors">
                                     <IconCheck className="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0" />
@@ -152,7 +198,7 @@ export const ProjectModal = ({
                 return (
                     <div className="space-y-3">
                         <h5 className="text-base font-semibold text-white mb-3">Desafíos Técnicos Superados</h5>
-                        <div className="grid gap-3">
+                        <div className="grid sm:grid-cols-2 gap-3">
                             {project.challenges?.map((challenge, index) => (
                                 <div key={index} className="p-3 bg-orange-500/10 rounded-md border border-orange-500/20 hover:border-orange-500/30 transition-colors">
                                     <div className="flex items-start gap-2">
@@ -168,7 +214,7 @@ export const ProjectModal = ({
                 return (
                     <div className="space-y-3">
                         <h5 className="text-base font-semibold text-white mb-3">Resultados Obtenidos</h5>
-                        <div className="grid gap-3">
+                        <div className="grid sm:grid-cols-2 gap-3">
                             {project.results?.map((result, index) => (
                                 <div key={index} className="p-3 bg-green-500/10 rounded-md border border-green-500/20 hover:border-green-500/30 transition-colors">
                                     <div className="flex items-start gap-2">
@@ -190,9 +236,9 @@ export const ProjectModal = ({
             className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-2 sm:p-4"
             onClick={handleBackdropClick}
         >
-            <div className="bg-gray-900 rounded-xl max-w-4xl w-full h-[95vh] flex flex-col border border-gray-800 shadow-2xl overflow-hidden">
-                {/* Header - Más compacto */}
-                <div className="flex-shrink-0 bg-gray-900/95 backdrop-blur-sm border-b border-gray-800 p-3 sm:p-4">
+            <div className="bg-gray-900 rounded-xl max-w-6xl xl:max-w-7xl w-full h-[96vh] flex flex-col border border-gray-800 shadow-2xl overflow-hidden">
+                {/* Header */}
+                <div className="flex-shrink-0 bg-gray-900/95 backdrop-blur-sm border-b border-gray-800 px-4 sm:px-6 py-3">
                     <div className="flex justify-between items-center gap-3">
                         <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 mb-1">
@@ -228,13 +274,13 @@ export const ProjectModal = ({
                         </div>
                     </div>
 
-                    {/* Tabs - Más compactos */}
+                    {/* Tabs */}
                     <div className="flex gap-1 mt-3 overflow-x-auto">
                         {tabs.map((tab) => (
                             <button
                                 key={tab.id}
                                 onClick={() => setActiveTab(tab.id)}
-                                className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs sm:text-sm font-medium transition-colors whitespace-nowrap ${
+                                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs sm:text-sm font-medium transition-colors whitespace-nowrap ${
                                     activeTab === tab.id
                                         ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
                                         : 'text-gray-400 hover:text-gray-200 hover:bg-gray-800/50'
@@ -247,13 +293,13 @@ export const ProjectModal = ({
                     </div>
                 </div>
 
-                {/* Content - Mejor gestión del espacio */}
-                <div className="flex-1 overflow-y-auto p-4 sm:py-6 sm:px-12">
+                {/* Content */}
+                <div className="flex-1 overflow-y-auto p-4 sm:py-8 sm:px-10 lg:px-20">
                     {renderTabContent()}
                 </div>
 
-                {/* Footer with Links - Solo GitHub */}
-                <div className="flex-shrink-0 bg-gray-900/95 backdrop-blur-sm border-t border-gray-800 p-3 sm:p-4">
+                {/* Footer with Links */}
+                <div className="flex-shrink-0 bg-gray-900/95 backdrop-blur-sm border-t border-gray-800 px-4 sm:px-6 py-3">
                     <div className="flex justify-center">
                         {project.githubUrl && (
                             <a
@@ -269,6 +315,71 @@ export const ProjectModal = ({
                     </div>
                 </div>
             </div>
+
+            {/* Lightbox */}
+            {isLightboxOpen && project.images && (
+                <div
+                    className="fixed inset-0 bg-black/95 z-[60] flex items-center justify-center p-4 sm:p-10"
+                    onClick={handleLightboxBackdropClick}
+                >
+                    <button
+                        onClick={() => setIsLightboxOpen(false)}
+                        className="absolute top-4 right-4 sm:top-6 sm:right-6 p-2 text-gray-300 hover:text-white bg-white/10 hover:bg-white/20 rounded-full transition-colors cursor-pointer"
+                        title="Cerrar vista ampliada"
+                    >
+                        <IconX className="w-5 h-5" />
+                    </button>
+
+                    <img
+                        src={project.images[currentImageIndex]}
+                        alt={`${project.title} - Imagen ${currentImageIndex + 1} ampliada`}
+                        className="max-h-[88vh] max-w-[92vw] object-contain rounded-lg shadow-2xl"
+                    />
+
+                    {project.images.length > 1 && (
+                        <>
+                            <button
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    prevImage(project.images.length);
+                                }}
+                                className="absolute left-3 sm:left-8 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white/20 text-white rounded-full p-2.5 sm:p-3 transition-colors cursor-pointer"
+                                title="Imagen anterior"
+                            >
+                                <IconChevronLeft className="w-5 h-5" />
+                            </button>
+                            <button
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    nextImage(project.images.length);
+                                }}
+                                className="absolute right-3 sm:right-8 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white/20 text-white rounded-full p-2.5 sm:p-3 transition-colors cursor-pointer"
+                                title="Siguiente imagen"
+                            >
+                                <IconChevronRight className="w-5 h-5" />
+                            </button>
+
+                            <div className="absolute bottom-4 sm:bottom-8 left-1/2 -translate-x-1/2 flex gap-1.5">
+                                {project.images.map((_, index) => (
+                                    <button
+                                        key={index}
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            goToImage(index);
+                                        }}
+                                        className={`transition-all ${
+                                            index === currentImageIndex
+                                                ? 'w-6 bg-white'
+                                                : 'w-2 bg-white/40 hover:bg-white/60'
+                                        } h-2 rounded-full cursor-pointer`}
+                                        title={`Ir a imagen ${index + 1}`}
+                                    />
+                                ))}
+                            </div>
+                        </>
+                    )}
+                </div>
+            )}
         </div>
     );
 };

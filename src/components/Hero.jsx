@@ -3,7 +3,7 @@ import TextType from '../react-bits-components/TextType';
 
 export const Hero = () => {
     return (
-        <section id="sobre-mi" className="min-h-[calc(100vh-140px)] flex items-center pt-6 mb-20 px-4 sm:px-6">
+        <section id="sobre-mi" className="min-h-[calc(100vh-100px)] flex items-center pt-6 mb-20 px-4 sm:px-6">
             <div className="max-w-4xl mx-auto w-full">
                 <div className="space-y-4 sm:space-y-6">
                     <h2 className="text-4xl sm:text-5xl md:text-7xl font-bold text-white">
@@ -20,7 +20,7 @@ export const Hero = () => {
                         />
                     </h3>
                     <p className="text-base sm:text-xl text-gray-400 max-w-2xl">
-                        Hola soy <span className="text-blue-300 font-semibold">Stephen Drouet</span>, desarrollador full-stack apasionado por crear experiencias excepcionales.
+                        Hola soy <span className="text-blue-300 font-semibold">Stephen Drouet</span>, desarrollador <span className="text-blue-300 font-semibold">full-stack</span> con principal enfoque en el <span className="text-blue-300 font-semibold">backend</span>, apasionado por crear experiencias excepcionales.
                     </p>
 
                     <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-4">

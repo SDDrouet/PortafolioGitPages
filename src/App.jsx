@@ -57,7 +57,6 @@ export default function App() {
         data-scroll-container
         className="h-screen not-md:px-4 overflow-y-auto scroll-smooth relative z-0"
       >
-
         <div className="w-full fixed top-0 h-screen pointer-events-none -z-10">
           <Particles
             particleColors={["#B8D9FF", "#51a2ff"]}
